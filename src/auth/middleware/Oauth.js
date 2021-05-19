@@ -8,9 +8,9 @@ const superagent = require('superagent');
 const userModel = require('../../auth/models/users');
 const jwt = require('jsonwebtoken');
 
-let CLIENT_ID = process.env.CLIENT_ID ;
-let CLIENT_SECRET = process.env.CLIENT_SECRET ;
-let SECRET = process.env.SECRET ;
+let CLIENT_ID = process.env.CLIENT_ID;
+let CLIENT_SECRET = process.env.CLIENT_SECRET;
+let SECRET = process.env.SECRET;
 
 let tokenUrl = 'https://www.linkedin.com/oauth/v2/accessToken';
 let userUrl = 'https://api.linkedin.com/v2/me';
@@ -21,7 +21,7 @@ module.exports = async (req, res, next) => {
     const code = req.query.code;
     console.log("AFTER FORM 1.CODE ======== ", code);
     const token = await exchangeCodeWithToken(code);
-   // console.log("AFTER FORM 2.TOKEN ======== ", token);
+    // console.log("AFTER FORM 2.TOKEN ======== ", token);
     // 3. Use the access token to access the user API
     let remoteUser = await exchangeTokenWithUserInfo(token);
     console.log("AFTER FORM 3.USER ======== ", remoteUser);
@@ -35,46 +35,47 @@ async function exchangeCodeWithToken(code) {
     // tokenUrl + params
     // response : token from github
     try {
-        const tokenResponse = await (await superagent.post(tokenUrl)).send({
+        const tokenResponse = await (await superagent.post(tokenUrl))
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('Host', 'www.linkedin.com')
+        .send({
+            code: code,
             client_id: CLIENT_ID,
             client_secret: CLIENT_SECRET,
-            code: code,
-            grant_type:'authorization_code',
-            'Content-Type':'application/x-www-form-urlencoded',
-            redirect_uri:'https://auth-team-ltuc.herokuapp.com/api/auth'
+            redirect_uri: 'https://auth-team-ltuc.herokuapp.com/api/auth',
+            grant_type: 'authorization_code'
 
         });
-       console.log("tokenResponse.body", tokenResponse.body)
+        // console.log("tokenResponse.body", tokenResponse.body)
         return tokenResponse.body.access_token;
-    } catch(err) {
-        
+    } catch (err) {
+
         console.log(err);
     }
 }
 
 async function exchangeTokenWithUserInfo(token) {
-     try {
-        const userInfo = await superagent.get(userUrl).set({
-            'Authorization': `Bearer ${token}`,
-        });
-       console.log(userInfo,'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    try {
+        const userInfo = await superagent.get(userUrl)
+        .set('user-agent', 'express-app')
+        .set('Authorization', `Bearer ${token}`)
         return userInfo.body;
-     } catch(err) {
+    } catch (err) {
         console.log(2);
-     }
+    }
 }
 
 async function getLocalUser(userObj) {
     try {
         let userRecord = {
-            username: userObj.first_name,
-            password: 'oauth' 
+            username: `${remoteUser.localizedFirstName} ${remoteUser.localizedLastName}`,
+            password: 'oauth'
         }
         let newUser = new userModel(userRecord);
         let user = await newUser.save();
-        let token = jwt.sign({username: user.username}, SECRET);
+        console.log(user);
         return [user, token];
-    }catch(err) {
+    } catch (err) {
         console.log(3)
     }
 }
