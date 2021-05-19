@@ -42,7 +42,7 @@ async function exchangeCodeWithToken(code) {
             code: code,
             client_id: CLIENT_ID,
             client_secret: CLIENT_SECRET,
-            redirect_uri: 'https://auth-team-ltuc.herokuapp.com/api/auth',
+            redirect_uri: 'https://o-auth-team.herokuapp.com/',
             grant_type: 'authorization_code'
 
         });
