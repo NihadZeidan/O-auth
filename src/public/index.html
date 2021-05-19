@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Github OAuth</title>
+    </head>
+    <body>
+        <main>
+            <a id="oauth">LinkedIn</a>
+        </main>
+    </body>
+    <script>
+        
+        let URL = 'https://www.linkedin.com/oauth/v2/authorization';
+        let options = {
+            response_type:'code',
+            client_id:'77va063l27wyzk',
+            redirect_uri : 'https://final-azzam.herokuapp.com',
+            scope :'r_liteprofile',
+            
+        }
+
+        // k1=v1&k2=v2
+        let queryString = Object.keys(options).map(key=> {
+            return `${key}=` + encodeURIComponent(options[key])
+        }).join('&');
+        //URL?k1=v1&k2=v2
+        let authURI = `${URL}?${queryString}`;
+        let link = document.getElementById('oauth');
+        link.setAttribute('href', authURI);
+
+    </script>
+</html>
