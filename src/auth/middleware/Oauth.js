@@ -58,8 +58,9 @@ async function exchangeTokenWithUserInfo(token) {
     try {
         const userInfo = await superagent.get(userUrl)
         .set('user-agent', 'express-app')
-        .set('Authorization', `Bearer ${token}`)
-        return userInfo.body;
+        .set('Authorization', `Bearer ${token}`);
+        const user =userInfo.body; 
+        return user;
     } catch (err) {
         console.log(2);
     }
