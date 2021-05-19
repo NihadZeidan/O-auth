@@ -19,7 +19,7 @@ const app = express();
 // App Level MW
 app.use(cors());
 app.use(morgan('dev'));
-
+app.use(express.static('/public/'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -27,7 +27,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(authRoutes);
 app.use('/api/v1',v1);
 app.use('/api/v2',v2);
-
+app.get('/',(req,res)=>{
+  res.sendFile(__dirname+'/public/index.html')
+})
 app.get('/api/auth', oAuthMiddleware , (req, res)=> {
   res.cookie(req.token);
   res.set(req.token);

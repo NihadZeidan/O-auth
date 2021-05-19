@@ -41,7 +41,7 @@ async function exchangeCodeWithToken(code) {
             code: code,
             grant_type:'authorization_code',
             'Content-Type':'application/x-www-form-urlencoded',
-            redirect_uri:'https://final-azzam.herokuapp.com'
+            redirect_uri:'https://auth-team-ltuc.herokuapp.com/api/auth'
 
         });
        console.log("tokenResponse.body", tokenResponse.body)
