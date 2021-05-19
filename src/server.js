@@ -36,7 +36,7 @@ app.get('/oauth', oAuthMiddleware, (req, res) => {
     res.cookie(req.token);
     res.set(req.token);
     res.status(201);
-    res.send(req.token);
+    res.json({ TOKEN: req.token, USER: req.user.username });
 });
 
 
