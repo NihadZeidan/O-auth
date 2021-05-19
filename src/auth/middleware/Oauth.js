@@ -15,7 +15,7 @@ let SECRET = process.env.SECRET;
 let tokenUrl = 'https://www.linkedin.com/oauth/v2/accessToken';
 let userUrl = 'https://api.linkedin.com/v2/me';
 
-module.exports = async (req, res, next) => {
+module.exports = async(req, res, next) => {
     // 2. Users are redirected back to your site by GitHub
     // console.log("query object: ", req.query);
     const code = req.query.code;
@@ -36,33 +36,32 @@ async function exchangeCodeWithToken(code) {
     // response : token from github
     try {
         const tokenResponse = await (await superagent.post(tokenUrl))
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .set('Host', 'www.linkedin.com')
-        .send({
-            code: code,
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
-            redirect_uri: 'https://o-auth-team.herokuapp.com/oauth',
-            grant_type: 'authorization_code'
+            .set('Content-Type', 'application/x-www-form-urlencoded')
+            .set('Host', 'www.linkedin.com')
+            .send({
+                code: code,
+                client_id: CLIENT_ID,
+                client_secret: CLIENT_SECRET,
+                redirect_uri: 'https://o-auth-team.herokuapp.com/oauth',
+                grant_type: 'authorization_code'
 
-        });
+            });
         // console.log("tokenResponse.body", tokenResponse.body)
         return tokenResponse.body.access_token;
     } catch (err) {
-
-        console.log(err);
+        console.log('exchangeCodeWithToken', err);
     }
 }
 
 async function exchangeTokenWithUserInfo(token) {
     try {
-        const userInfo = await superagent.get(userUrl)
-        .set('user-agent', 'express-app')
-        .set('Authorization', `Bearer ${token}`);
-        const user =userInfo.body; 
+        const userInfo = await superagent.get(userUrl).set('Authorization', `Bearer ${token}`);
+        // .set('user-agent', 'express-app')
+        const user = userInfo.body;
         return user;
     } catch (err) {
-        console.log(2);
+        console.log("exchangeTokenWithUserInfo");
+        console.log(err);
     }
 }
 
@@ -72,11 +71,11 @@ async function getLocalUser(userObj) {
             username: `${userObj.localizedFirstName} ${userObj.localizedLastName}`,
             password: 'oauth'
         }
-        let newUser = new userModel(userRecord);
+        let newUser = userModel(userRecord);
         let user = await newUser.save();
         console.log(user);
         return [user, user.token];
     } catch (err) {
-        console.log(3)
+        console.log("getLocalUser", err);
     }
 }

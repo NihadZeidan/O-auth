@@ -25,27 +25,31 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use(authRoutes);
-app.use('/api/v1',v1);
-app.use('/api/v2',v2);
-app.get('/',(req,res)=>{
-  res.sendFile(__dirname+'/public/index.html')
-})
-app.get('/oauth', oAuthMiddleware , (req, res)=> {
-  res.cookie(req.token);
-  res.set(req.token);
-  res.status(201);
-  res.send(req.token);
+app.use('/api/v1', v1);
+app.use('/api/v2', v2);
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html')
 });
+
+
+app.get('/oauth', oAuthMiddleware, (req, res) => {
+    res.cookie(req.token);
+    res.set(req.token);
+    res.status(201);
+    res.send(req.token);
+});
+
+
 // Catchalls
 app.use(logger);
 app.use(notFound);
 app.use(errorHandler);
 
 module.exports = {
-  server: app,
-  start: (port) => {
-    app.listen(port, () => {
-      console.log(`Server Up on ${port}`);
-    });
-  },
+    server: app,
+    start: (port) => {
+        app.listen(port, () => {
+            console.log(`Server Up on ${port}`);
+        });
+    },
 };
