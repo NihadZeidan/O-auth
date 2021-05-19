@@ -68,13 +68,13 @@ async function exchangeTokenWithUserInfo(token) {
 async function getLocalUser(userObj) {
     try {
         let userRecord = {
-            username: `${remoteUser.localizedFirstName} ${remoteUser.localizedLastName}`,
+            username: `${userObj.localizedFirstName} ${userObj.localizedLastName}`,
             password: 'oauth'
         }
         let newUser = new userModel(userRecord);
         let user = await newUser.save();
         console.log(user);
-        return [user, token];
+        return [user, user.token];
     } catch (err) {
         console.log(3)
     }
