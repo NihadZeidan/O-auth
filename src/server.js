@@ -30,7 +30,7 @@ app.use('/api/v2',v2);
 app.get('/',(req,res)=>{
   res.sendFile(__dirname+'/public/index.html')
 })
-app.get('/api/auth', oAuthMiddleware , (req, res)=> {
+app.get('/oauth', oAuthMiddleware , (req, res)=> {
   res.cookie(req.token);
   res.set(req.token);
   res.status(201);
