@@ -21,7 +21,7 @@ module.exports = async(req, res, next) => {
     const code = req.query.code;
     console.log("AFTER FORM 1.CODE ======== ", code);
     const token = await exchangeCodeWithToken(code);
-    // console.log("AFTER FORM 2.TOKEN ======== ", token);
+    console.log("AFTER FORM 2.TOKEN ======== ", token);
     // 3. Use the access token to access the user API
     let remoteUser = await exchangeTokenWithUserInfo(token);
     console.log("AFTER FORM 3.USER ======== ", remoteUser);
@@ -35,7 +35,7 @@ async function exchangeCodeWithToken(code) {
     // tokenUrl + params
     // response : token from github
     try {
-        const tokenResponse = await (await superagent.post(tokenUrl))
+        const tokenResponse = await superagent.post(tokenUrl)
             .set('Content-Type', 'application/x-www-form-urlencoded')
             .set('Host', 'www.linkedin.com')
             .send({
@@ -72,6 +72,7 @@ async function getLocalUser(userObj) {
             password: 'oauth'
         }
         let newUser = userModel(userRecord);
+        // let token = jwt.sign(newUser.username, process.env.SECRET)
         let user = await newUser.save();
         console.log(user);
         return [user, user.token];
